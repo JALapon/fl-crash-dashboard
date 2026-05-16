@@ -1,0 +1,26 @@
+# Project context
+
+This is a data analyst portfolio project: a small pipeline that pulls
+Florida crash data from the FDOT / Signal Four Analytics public API,
+cleans it in pandas, aggregates it in DuckDB, and exports CSVs for a
+Tableau Public dashboard.
+
+The audience is a hiring manager reviewing the GitHub repo and a
+LinkedIn writeup, and the author defending the work in an interview.
+
+# How to help
+
+- Prefer pandas and DuckDB. Don't reach for Spark, Airflow, dbt, or any
+  heavier orchestrator — the whole project should run on a laptop.
+- Keep code well-commented for interview defense: every non-trivial step
+  should be readable to someone seeing it for the first time, with a
+  short comment explaining *why* (not just what).
+- Don't over-engineer. No premature abstraction, no config systems, no
+  retry/backoff frameworks unless something concrete requires it. A
+  straight-line script is the right shape here.
+- Keep the pipeline reproducible: raw pulls land in data/raw/ and are
+  never mutated; clean.py reads from there and writes to data/processed/.
+- SQL aggregations live in sql/ as plain .sql files invoked from
+  clean.py so they're easy to review on their own.
+- Tableau Public can only read CSVs from disk, so processed/ outputs
+  should be flat CSVs, one per dashboard view.
