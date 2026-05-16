@@ -1,20 +1,42 @@
 # Florida Crash Dashboard
 
-> One-line hook: TODO — e.g. "Where and when are Florida traffic crashes most likely, and what can a city do about it?"
+> Where and when do Florida's most dangerous crashes happen — and what does that pattern reveal about which counties, times, and conditions warrant attention?
 
 ## The question this project answers
 
-TODO — state the analytical question (e.g. *Which Florida counties saw the
-largest year-over-year change in crash severity, and what hour-of-day /
-day-of-week patterns drive that change?*).
+**Primary question:** *Where and when do Florida's **fatal and serious-injury**
+crashes concentrate?*
+
+By filtering to fatal and serious-injury crashes (instead of all crashes),
+the dashboard surfaces places that are genuinely dangerous rather than
+just busy — a total-crash map of Florida looks essentially like a map of
+where people live, which isn't useful.
+
+**Supporting sub-questions:**
+- *Where:* Which counties, cities, and road segments hold the largest
+  share of fatal/serious-injury crashes?
+- *When:* What are the dominant time-of-day, day-of-week, and seasonal
+  patterns for those crashes?
+- *Trend:* How has the where/when pattern shifted year over year
+  (subject to the date range available from the API)?
 
 ## Data source
 
-Florida Department of Transportation (FDOT) / Signal Four Analytics public
-crash data API.
+**FDOT State Safety Office** — public ArcGIS REST FeatureServer:
+[`https://gis.fdot.gov/arcgis/rest/services/Crashes_All/FeatureServer`](https://gis.fdot.gov/arcgis/rest/services/Crashes_All/FeatureServer)
 
-TODO — link to the specific endpoint(s), document the date range pulled,
-and note any access caveats (rate limits, registration, etc.).
+- **Coverage:** 2011 – 2019 (~3.3M total crashes statewide).
+- **Analytical slice:** fatal + serious-injury crashes only
+  (`INJSEVER IN ('4','5')`), ≈ **161,000 records** — the dashboard is
+  scoped to genuinely dangerous outcomes, not all fender-benders.
+- **Access:** open, no API key, no registration required.
+- **Why not Signal Four Analytics:** the recent end of FL crash data
+  lives there, but S4A is gated behind agency accounts and not
+  accessible for a public portfolio project.
+
+See [`docs/api_notes.md`](docs/api_notes.md) for the full layer / field
+breakdown, severity-code mapping, pagination scheme, and a working
+`curl` example.
 
 ## Pipeline
 
