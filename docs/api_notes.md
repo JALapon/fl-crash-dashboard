@@ -92,9 +92,9 @@ while True:
 ## Geometry / coordinates
 
 - The native `geometry` field is in **`wkid 26917`** (UTM Zone 17N,
-  NAD83). Don't use this directly in Tableau.
+  NAD83). Don't use this directly in the dashboard.
 - The attributes also carry **`SAFETYLAT`** and **`SAFETYLON`** in plain
-  WGS84 — these are what we feed Tableau.
+  WGS84 — these are what we feed Plotly's map layers.
 - Alternative: pass `outSR=4326` to the query and the returned geometry
   will already be lon/lat in WGS84. Either works; we prefer
   `SAFETYLAT/SAFETYLON` because it's an attribute (survives a CSV
@@ -148,7 +148,7 @@ Verified to return 5 features. Step 2 acceptance criterion met.
 - A handful of rows have `SAFETYLAT/LON` missing or zero — drop those
   in `clean.py` rather than trying to backfill from the UTM geometry.
 - `COUNTY_TXT` is uppercase and includes hyphenated names (e.g.
-  `'MIAMI-DADE'`) — normalize to title-case for display in Tableau.
+  `'MIAMI-DADE'`) — normalize to title-case for display in the dashboard.
 
 ## Post-pull findings (Step 3 verification)
 

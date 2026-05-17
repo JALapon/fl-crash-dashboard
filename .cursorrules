@@ -2,8 +2,9 @@
 
 This is a data analyst portfolio project: a small pipeline that pulls
 Florida crash data from the FDOT / Signal Four Analytics public API,
-cleans it in pandas, aggregates it in DuckDB, and exports CSVs for a
-Tableau Public dashboard.
+cleans it in pandas, aggregates it in DuckDB, exports per-view CSVs,
+and renders them as an interactive Streamlit + Plotly dashboard
+deployed on Streamlit Community Cloud.
 
 The audience is a hiring manager reviewing the GitHub repo and a
 LinkedIn writeup, and the author defending the work in an interview.
@@ -22,5 +23,11 @@ LinkedIn writeup, and the author defending the work in an interview.
   never mutated; clean.py reads from there and writes to data/processed/.
 - SQL aggregations live in sql/ as plain .sql files invoked from
   clean.py so they're easy to review on their own.
-- Tableau Public can only read CSVs from disk, so processed/ outputs
-  should be flat CSVs, one per dashboard view.
+- The Streamlit app reads the per-view CSVs in `data/processed/` (those
+  CSVs are committed to git so the deployed Community Cloud app has
+  data on startup — the cloud runner doesn't execute `clean.py`).
+- Prefer Plotly Express for charts: one-line API, sensible defaults,
+  good interactivity. Skip Altair/Bokeh unless something concrete
+  requires them.
+- Use `@st.cache_data` on the CSV loaders so widgets don't reread
+  files on every script rerun.

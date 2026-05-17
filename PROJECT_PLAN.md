@@ -1,7 +1,7 @@
 # Project Plan — Florida Crash Dashboard
 
 A step-by-step runbook for taking this project from empty scaffold to a
-published Tableau Public dashboard + LinkedIn writeup. Tackle one step at
+published Streamlit Community Cloud dashboard + LinkedIn writeup. Tackle one step at
 a time; each section lists what the step covers and what "done" looks
 like.
 
@@ -150,26 +150,42 @@ they all have non-zero rows.
 
 ---
 
-## Step 7 — Build the Tableau Public dashboard
+## Step 7 — Build the Streamlit dashboard
 
-**Goal:** turn the CSVs into a polished, public-facing dashboard.
+**Goal:** turn the per-view CSVs into a polished, public-facing
+Streamlit app deployed on Streamlit Community Cloud — one URL anyone
+can open in their browser.
 
 **What it involves:**
-- Install **Tableau Public Desktop** (free).
-- Connect to the CSVs in `data/processed/` (Tableau Public can only
-  read local files, not databases — that's why we exported CSVs).
-- Build one **sheet per question/sub-question** from Step 1. Keep each
-  sheet focused — one chart, one idea.
-- Compose sheets into a single **dashboard** with:
-  - A clear title that restates the question.
-  - 3–5 sheets max — resist the urge to add everything.
-  - Filters where they help (year, county, severity).
-  - Tooltips that explain numbers, not just repeat them.
-- Publish to Tableau Public (`Server → Tableau Public → Save to Tableau
-  Public`).
+- Add `streamlit` and `plotly` to `requirements.txt`.
+- Create **`app.py`** at the project root (Streamlit's default entry).
+  It loads the CSVs in `data/processed/` (committed to git — see note
+  below) and renders one section per Step 1 sub-question:
+  - *Where:* choropleth of `crashes_by_county_year` + a Mapbox /
+    scatter-map layer fed by `top_points.csv` (fatal points).
+  - *When:* hour × day-of-week heatmap from `crashes_by_hour_dow.csv`.
+  - *Trend:* yearly line chart from `crashes_yearly_trend.csv`.
+  - *Mix:* stacked-bar from `severity_breakdown_by_county.csv`.
+- Sidebar widgets for cross-cutting filters: year range slider,
+  county multi-select, severity toggle. Wire each widget to the
+  charts that should respect it.
+- Tooltips that explain the number, not just repeat it. Short
+  captions under each chart that name the question being answered.
+- Use `@st.cache_data` on the CSV loaders — Streamlit reruns the
+  whole script on every interaction.
+- Polish: page title, hero header restating the question, a footer
+  linking back to the GitHub repo + `docs/api_notes.md`.
+- **Deploy:** sign in to share.streamlit.io with GitHub OAuth,
+  authorize the repo, click "Deploy". One-time, ~5 minutes.
 
-**Done when:** you have a public URL anyone can open without a Tableau
-account.
+**Note on committed data:** Streamlit Community Cloud pulls the repo
+as-is and doesn't execute `ingest.py`/`clean.py` for you. The five
+CSVs in `data/processed/` (~1.3 MB total) are therefore committed
+to git via an explicit allow-list in `.gitignore`. Raw pulls
+(`data/raw/`) and the local DuckDB file stay gitignored.
+
+**Done when:** you have a Streamlit Community Cloud URL anyone can
+open without an account.
 
 ---
 
@@ -184,7 +200,7 @@ artifact.
   - Bad: *"Hour-of-day was an interesting variable."*
   - Good: *"42% of fatal crashes occur between 6pm–midnight, despite
     that window holding only 25% of total crash volume."*
-- Paste the Tableau Public URL into the **Live Tableau dashboard**
+- Paste the Streamlit Community Cloud URL into the **Live dashboard**
   section.
 - Add a screenshot or short GIF of the dashboard at the top of the
   README — most reviewers scroll for 8 seconds before deciding to read.
@@ -204,13 +220,13 @@ answer, and how do I run it.
 - Lead with the question and a single surprising finding.
 - 3–4 short paragraphs, *not* a bulleted résumé blob:
   1. What you set out to learn and why
-  2. How you built it (Python → pandas → DuckDB → Tableau, ~1 line)
+  2. How you built it (Python → pandas → DuckDB → Streamlit, ~1 line)
   3. The 2–3 most interesting findings, with concrete numbers
-  4. Links: GitHub repo + Tableau Public dashboard
+  4. Links: GitHub repo + Streamlit dashboard
 - Attach the dashboard screenshot.
-- Tag it `#dataanalytics #tableau #python #duckdb` (no more than 4–5).
+- Tag it `#dataanalytics #streamlit #python #duckdb` (no more than 4–5).
 
-**Done when:** posted, and the GitHub repo and Tableau dashboard both
+**Done when:** posted, and the GitHub repo and Streamlit dashboard both
 have inbound traffic from the post.
 
 ---
@@ -243,6 +259,6 @@ Tick these off as you go so we both know where we are.
 - [x] Step 4 — EDA notebook + cleaning plan written
 - [x] Step 5 — `clean.py` loads cleaned data into DuckDB
 - [x] Step 6 — SQL aggregations exported as CSVs in `data/processed/`
-- [ ] Step 7 — Tableau Public dashboard published
+- [ ] Step 7 — Streamlit dashboard deployed
 - [ ] Step 8 — README finalized (findings, link, screenshot)
 - [ ] Step 9 — LinkedIn post live

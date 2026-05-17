@@ -6,11 +6,15 @@ __pycache__/
 # Jupyter
 .ipynb_checkpoints/
 
-# Data — keep folder structure, ignore contents
+# Data — keep folder structure, ignore raw pulls.
+# Processed CSVs ARE committed: Streamlit Community Cloud runs the repo
+# as-is and doesn't execute our pipeline, so the pre-aggregated outputs
+# need to travel with the repo.
 data/raw/*
 !data/raw/.gitkeep
 data/processed/*
 !data/processed/.gitkeep
+!data/processed/*.csv
 
 # Secrets / local
 .env

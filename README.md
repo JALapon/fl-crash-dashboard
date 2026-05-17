@@ -55,10 +55,11 @@ breakdown, severity-code mapping, pagination scheme, and a working
                        sql/ aggregation queries
                                 │
                                 ▼
-                       data/processed/    (per-view CSVs)
+                       data/processed/    (per-view CSVs, committed)
                                 │
                                 ▼
-                       Tableau Public dashboard
+                       Streamlit + Plotly dashboard
+                       (hosted on Streamlit Community Cloud)
 ```
 
 ## Key findings
@@ -66,9 +67,9 @@ breakdown, severity-code mapping, pagination scheme, and a working
 TODO — fill in once analysis is complete (3–5 bullet points, each tied to a
 chart in the dashboard).
 
-## Live Tableau dashboard
+## Live dashboard
 
-TODO — Tableau Public URL.
+TODO — Streamlit Community Cloud URL.
 
 ## How to reproduce
 
@@ -91,10 +92,11 @@ python src/ingest.py
 # 5. Clean, load into DuckDB, export aggregated CSVs → data/processed/
 python src/clean.py
 
-# 6. Open the dashboard
-# Tableau Public link: TODO
+# 6. Run the dashboard locally
+streamlit run app.py
+# Hosted version: TODO (Streamlit Community Cloud URL)
 ```
 
 ## Tech stack
 
-Python · pandas · DuckDB · SQL · Tableau Public
+Python · pandas · DuckDB · SQL · Streamlit · Plotly
