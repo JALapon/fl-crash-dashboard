@@ -69,7 +69,11 @@ chart in the dashboard).
 
 ## Live dashboard
 
-TODO — Streamlit Community Cloud URL.
+**→ [fl-crash-dashboard.streamlit.app](https://fl-crash-dashboard.streamlit.app)**
+
+Built with Streamlit + Plotly, hosted on Streamlit Community Cloud.
+A free Streamlit account is required to view (Community Cloud policy);
+sign-in is one click via GitHub or Google.
 
 ## How to reproduce
 
@@ -94,7 +98,7 @@ python src/clean.py
 
 # 6. Run the dashboard locally
 streamlit run app.py
-# Hosted version: TODO (Streamlit Community Cloud URL)
+# Hosted version: https://fl-crash-dashboard.streamlit.app
 ```
 
 ## Tech stack
