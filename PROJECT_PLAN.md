@@ -242,7 +242,7 @@ Tick these off as you go so we both know where we are.
 - [x] Step 3 — `ingest.py` produces raw files
 - [x] Step 4 — EDA notebook + cleaning plan written
 - [x] Step 5 — `clean.py` loads cleaned data into DuckDB
-- [ ] Step 6 — SQL aggregations exported as CSVs in `data/processed/`
+- [x] Step 6 — SQL aggregations exported as CSVs in `data/processed/`
 - [ ] Step 7 — Tableau Public dashboard published
 - [ ] Step 8 — README finalized (findings, link, screenshot)
 - [ ] Step 9 — LinkedIn post live

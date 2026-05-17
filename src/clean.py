@@ -25,6 +25,8 @@ import pandas as pd
 
 PROJECT = Path(__file__).resolve().parent.parent
 RAW_DIR = PROJECT / "data" / "raw"
+SQL_DIR = PROJECT / "sql"
+PROCESSED_DIR = PROJECT / "data" / "processed"
 DB_PATH = PROJECT / "crashes.duckdb"
 
 # --- Constants derived from EDA -------------------------------------
@@ -162,6 +164,33 @@ def write_duckdb(df: pd.DataFrame, db_path: Path) -> None:
     con.close()
 
 
+def export_aggregations(db_path: Path, sql_dir: Path, out_dir: Path) -> list[tuple[str, int]]:
+    """Run every ``sql/*.sql`` file against the DuckDB table and write each
+    result to ``data/processed/<basename>.csv`` (Step 6 in PROJECT_PLAN.md).
+
+    Returns a list of (csv_name, row_count) for the summary print.
+    """
+    out_dir.mkdir(parents=True, exist_ok=True)
+    sql_files = sorted(sql_dir.glob("*.sql"))
+    if not sql_files:
+        raise FileNotFoundError(f"no *.sql files found in {sql_dir}")
+
+    con = duckdb.connect(str(db_path), read_only=True)
+    results: list[tuple[str, int]] = []
+    try:
+        for sql_path in sql_files:
+            query = sql_path.read_text()
+            # Each SQL file is a single SELECT; .df() materializes it
+            # into pandas so we can write CSV with consistent quoting.
+            result = con.execute(query).df()
+            csv_path = out_dir / f"{sql_path.stem}.csv"
+            result.to_csv(csv_path, index=False)
+            results.append((csv_path.name, len(result)))
+    finally:
+        con.close()
+    return results
+
+
 def main() -> int:
     print(f"Reading from {RAW_DIR.relative_to(PROJECT)}/ ...")
     df_raw = load_raw(RAW_DIR)
@@ -199,6 +228,13 @@ def main() -> int:
     print(f"  table 'crashes': {n:,} rows, {len(cols)} columns")
     print(f"    - severity=Fatal          : {n_fatal:,}")
     print(f"    - severity=Serious injury : {n_serious:,}")
+
+    # Step 6 — run sql/*.sql aggregations and export per-view CSVs.
+    print(f"\nRunning aggregations from {SQL_DIR.relative_to(PROJECT)}/ "
+          f"-> {PROCESSED_DIR.relative_to(PROJECT)}/")
+    exports = export_aggregations(DB_PATH, SQL_DIR, PROCESSED_DIR)
+    for name, rows in exports:
+        print(f"  {name:<40} {rows:>7,} rows")
     return 0
 
 
