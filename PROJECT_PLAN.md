@@ -239,7 +239,7 @@ Tick these off as you go so we both know where we are.
 
 - [x] Step 1 — Question pinned in README
 - [x] Step 2 — API documented (curl example works)
-- [ ] Step 3 — `ingest.py` produces raw files
+- [x] Step 3 — `ingest.py` produces raw files
 - [ ] Step 4 — EDA notebook + cleaning plan written
 - [ ] Step 5 — `clean.py` loads cleaned data into DuckDB
 - [ ] Step 6 — SQL aggregations exported as CSVs in `data/processed/`

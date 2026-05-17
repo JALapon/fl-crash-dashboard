@@ -149,3 +149,34 @@ Verified to return 5 features. Step 2 acceptance criterion met.
   in `clean.py` rather than trying to backfill from the UTM geometry.
 - `COUNTY_TXT` is uppercase and includes hyphenated names (e.g.
   `'MIAMI-DADE'`) — normalize to title-case for display in Tableau.
+
+## Post-pull findings (Step 3 verification)
+
+Things we only learned by actually pulling the data, captured here so
+Step 5's `clean.py` doesn't have to re-discover them.
+
+- **2019 is partial.** Year-row distribution on the pulled file:
+  2011: 13,380 · 2012: 29,756 · 2013: 26,740 · 2014: 17,402 ·
+  2015: 18,323 · 2016: 18,908 · 2017: 17,921 · 2018: 16,964 ·
+  **2019: 1,763**. The 2019 cohort is ~10% of a normal year's
+  volume — treat it as truncated, not as a real "low year." The
+  dashboard should either drop 2019 or label it explicitly as a
+  partial year so trend lines don't lie.
+- **2012 is anomalously high** (~30k vs the ~17–18k typical baseline).
+  Worth flagging in EDA; likely a coding/back-population artifact in
+  the source. Don't tweak it in `clean.py` without understanding it.
+- **15.3% of rows are exact duplicates on `XID`.** 24,673 of 136,484
+  distinct crash IDs appear exactly twice (never 3+), and every
+  duplicate pair has identical values across all 13 attributes we
+  pulled. Almost certainly an upstream join/union artifact in the
+  FDOT view, not a meaningful "second event." Drop them with a
+  plain `drop_duplicates(subset='XID')` in `clean.py` — final
+  expected row count after dedupe: **136,484**.
+- **Geocoding coverage is essentially complete.** Only 22 of 161,157
+  rows are missing `SAFETYLAT`/`SAFETYLON`. Drop those rows for the
+  map view; they're below noise for aggregate stats.
+- **`CRASH_DATE` is epoch-milliseconds** (e.g. `1317704400000`), not
+  ISO. Convert via `pd.to_datetime(col, unit='ms')` in `clean.py`.
+- **`CRASH_TIME` is a 4-char string like `'1305'`** (HHMM). Lots of
+  rows have `'0000'` — worth checking in EDA whether those are
+  genuine midnight crashes or "unknown time" sentinels.
